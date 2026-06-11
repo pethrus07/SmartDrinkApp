@@ -1,0 +1,26 @@
+name: smart_drink
+description: Smart Drink — app de controle (kiosk) da máquina de drinks.
+publish_to: 'none'
+version: 0.2.0+2
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.1.0
+  flutter_animate: ^4.3.0
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  # Transporte físico (decidir canal — ver docs/ROADMAP.md):
+  # usb_serial: ^0.5.1          # opção A: USB OTG
+  # flutter_blue_plus: ^1.31.0  # opção B: Bluetooth
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
