@@ -70,7 +70,7 @@ class _NeonButtonState extends State<NeonButton> {
                 ]
               : [],
         ),
-        transform: _pressed ? Matrix4.identity()..scale(0.97) : Matrix4.identity(),
+        transform: _pressed ? (Matrix4.identity()..scale(0.97)) : Matrix4.identity(),
         child: Row(
           mainAxisSize: widget.expanded ? MainAxisSize.max : MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

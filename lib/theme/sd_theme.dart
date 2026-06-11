@@ -106,7 +106,7 @@ class SDTheme {
           ),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: SDColors.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
