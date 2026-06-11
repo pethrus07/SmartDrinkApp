@@ -7,6 +7,7 @@ import '../widgets/drink_card.dart';
 import '../widgets/cup_widget.dart';
 import '../widgets/neon_button.dart';
 import '../widgets/drink_illustration.dart';
+import '../widgets/pin_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -160,7 +161,13 @@ class _Header extends StatelessWidget {
         const SizedBox(width: 16),
         // Admin (ícone discreto)
         IconButton(
-          onPressed: () => provider.goToAdmin(),
+          onPressed: () async {
+            final ok = await showDialog<bool>(
+              context: context,
+              builder: (_) => const PinDialog(),
+            );
+            if (ok == true) provider.goToAdmin();
+          },
           icon: const Icon(Icons.settings, color: SDColors.textMuted, size: 20),
           tooltip: 'Configurações',
         ),
@@ -202,6 +209,7 @@ class _DrinksGrid extends StatelessWidget {
         return DrinkCard(
           drink: drink,
           isSelected: selected?.id == drink.id,
+          unavailable: !provider.isDrinkAvailable(drink),
           onTap: () => provider.selectPreset(drink),
         );
       },
@@ -371,13 +379,22 @@ class _SidePanel extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Botão fazer drink
+            if (!provider.activeAvailable) ...[
+              Text(
+                'Ingrediente em falta — procure o atendente',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: SDColors.pink, fontSize: 12),
+              ),
+              const SizedBox(height: 8),
+            ],
             NeonButton(
               label: 'FAZER DRINK',
               icon: Icons.local_bar,
               color: SDColors.cyan,
               expanded: true,
               height: 56,
-              onPressed: () => provider.makeDrink(),
+              onPressed:
+                  provider.activeAvailable ? () => provider.goToPayment() : null,
             ),
           ] else ...[
             const Spacer(),
@@ -479,7 +496,9 @@ class _BottomActions extends StatelessWidget {
             color: SDColors.cyan,
             expanded: true,
             height: 52,
-            onPressed: selected != null ? () => provider.makeDrink() : null,
+            onPressed: selected != null && provider.activeAvailable
+                ? () => provider.goToPayment()
+                : null,
           ),
         ),
       ],

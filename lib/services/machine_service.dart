@@ -9,6 +9,7 @@ import 'dart:async';
 
 import '../core/sd_protocol.dart';
 import '../hardware/machine_transport.dart';
+import '../hardware/mock_transport.dart';
 import '../models/drink_models.dart';
 
 class MachineService {
@@ -117,6 +118,17 @@ class MachineService {
       onProgress?.call(1.0);
     }
     return command;
+  }
+
+  /// Reabastece um reservatório.
+  ///
+  /// Na máquina real o reabastecimento é físico (tampa superior) e o
+  /// nível é detectado pelo sensor — aqui apenas atualizamos o simulador
+  /// e relemos os níveis. Em transporte real, só relê os níveis.
+  Future<void> refill(int reservoir) async {
+    final t = _transport;
+    if (t is MockTransport) t.refill(reservoir);
+    await requestLevels();
   }
 
   /// Solicita os níveis dos reservatórios.

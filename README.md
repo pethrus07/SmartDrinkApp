@@ -5,7 +5,7 @@ App de controle (modo kiosk) da máquina de drinks **Smart Drink** — roda no t
 | | |
 |---|---|
 | **Plataforma** | Flutter (Android tablet, landscape, kiosk) |
-| **Estado** | Protótipo funcional com máquina simulada |
+| **Estado** | Demo funcional completa — máquina e pagamento simulados |
 | **Hardware** | 6 reservatórios, válvulas com calibragem 30 ms/ml + 100 ms de abertura, copo de 400 ml |
 
 ## Como rodar
@@ -58,8 +58,11 @@ Detalhes em [docs/ARQUITETURA.md](docs/ARQUITETURA.md) · Protocolo em [docs/PRO
 
 ## Fluxo do usuário
 
-1. **Home** — grade de drinks (presets de fábrica + criados pelo owner) ou modo personalizar
-2. **Customize** — ajuste de porções por reservatório, limitado ao copo de 400 ml
-3. **Making** — comando enviado à máquina, progresso estimado por tempo
-4. **Done** — confirmação e retorno ao início
-5. **Admin** — gerenciar drinks, níveis dos reservatórios, calibragem e teste de válvulas
+1. **Home** — grade de drinks (presets + criados pelo owner); drinks com ingrediente em falta aparecem com selo "EM FALTA" e não podem ser pedidos
+2. **Customize** — ajuste de porções por reservatório, limitado ao copo de 400 ml; reservatórios vazios não podem ser adicionados
+3. **Pagamento** *(simulado)* — Pix (QR ilustrativo) ou cartão, aprovação automática ou pelo botão de demo
+4. **Making** — comando enviado à máquina, progresso estimado por tempo
+5. **Done** — confirmação e retorno ao início · **Error** — falha no preparo ("procure o atendente")
+6. **Admin** *(PIN padrão: 1234)* — gerenciar drinks, reservatórios (nível, renomear, reabastecer), estatísticas de uso, preço do drink, simulação de falha, calibragem editável e teste de válvulas
+
+> Tudo funciona sem hardware: o `MockTransport` simula a máquina (níveis, consumo de estoque, conclusão do preparo) e o pagamento é uma simulação visual do fluxo previsto.

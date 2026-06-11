@@ -80,9 +80,10 @@ class DrinkPreset {
       );
 }
 
-// ─── INGREDIENTES PADRÃO (6 reservatórios) ──────────────────
-// TODO(escala): tornar configurável pelo painel admin e persistir
-// por máquina — cada cliente carrega bebidas diferentes.
+// ─── INGREDIENTES DOS RESERVATÓRIOS ─────────────────────────
+// Lista VIVA: o painel admin pode renomear cada reservatório
+// (DrinkProvider.renameIngredient substitui o item e persiste).
+// Cor e ícone permanecem fixos por posição.
 final List<Ingredient> defaultIngredients = [
   const Ingredient(
     reservoir: 1,
@@ -213,3 +214,10 @@ final List<DrinkPreset> presetDrinks = [
     ],
   ),
 ];
+
+
+/// Ingrediente associado a um reservatório (1..numReservoirs).
+Ingredient ingredientFor(int reservoir) => defaultIngredients.firstWhere(
+      (i) => i.reservoir == reservoir,
+      orElse: () => defaultIngredients[0],
+    );

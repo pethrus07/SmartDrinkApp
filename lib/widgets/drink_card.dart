@@ -6,12 +6,14 @@ import 'drink_illustration.dart';
 class DrinkCard extends StatelessWidget {
   final DrinkPreset drink;
   final bool isSelected;
+  final bool unavailable;
   final VoidCallback onTap;
 
   const DrinkCard({
     super.key,
     required this.drink,
     required this.isSelected,
+    this.unavailable = false,
     required this.onTap,
   });
 
@@ -19,7 +21,44 @@ class DrinkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: unavailable ? 0.45 : 1.0,
+        child: Stack(
+          children: [
+            _buildCard(context),
+            if (unavailable)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: SDColors.pink.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
+                    border:
+                        Border.all(color: SDColors.pink.withOpacity(0.6)),
+                  ),
+                  child: Text(
+                    'EM FALTA',
+                    style: TextStyle(
+                      color: SDColors.pink,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
+    return AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
         decoration: isSelected
@@ -94,7 +133,6 @@ class DrinkCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

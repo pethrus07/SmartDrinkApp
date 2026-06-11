@@ -184,8 +184,11 @@ class _SlidersList extends StatelessWidget {
   Widget build(BuildContext context) {
     // Ingredientes disponíveis para adicionar
     final usedReservoirs = portions.map((p) => p.reservoir).toSet();
+    // Reservatórios vazios não podem ser adicionados ao drink.
     final available = defaultIngredients
-        .where((i) => !usedReservoirs.contains(i.reservoir))
+        .where((i) =>
+            !usedReservoirs.contains(i.reservoir) &&
+            !provider.isReservoirEmpty(i.reservoir))
         .toList();
 
     return ListView(
@@ -519,7 +522,9 @@ class _CustomizeFooter extends StatelessWidget {
             color: SDColors.cyan,
             expanded: true,
             height: 54,
-            onPressed: provider.isValid ? () => provider.makeDrink() : null,
+            onPressed: provider.isValid && provider.activeAvailable
+                ? () => provider.goToPayment()
+                : null,
           ),
         ),
       ],

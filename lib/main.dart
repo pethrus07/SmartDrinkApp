@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'app.dart';
 import 'data/drink_repository.dart';
+import 'data/settings_repository.dart';
 import 'hardware/machine_transport.dart';
 import 'hardware/mock_transport.dart';
 import 'services/drink_provider.dart';
@@ -38,6 +39,7 @@ Future<void> main() async {
   final provider = DrinkProvider(
     machine: machine,
     repository: DrinkRepository(),
+    settingsRepository: SettingsRepository(),
   );
   // Carrega drinks salvos e níveis sem bloquear o primeiro frame.
   provider.init();

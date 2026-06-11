@@ -72,10 +72,14 @@ class MockTransport implements MachineTransport {
           _levels[entry.key] = (_levels[entry.key]! - 1).clamp(0, 2);
         }
       }
-      await Future.delayed(
+      // O firmware responde imediatamente e sinaliza `done` ao terminar:
+      // o envio NÃO bloqueia (o progresso na UI corre em paralelo).
+      Future.delayed(
         Duration(milliseconds: (totalMs / timeScale).round()),
+        () {
+          if (_connected) _controller.add('#SD;done;/SD');
+        },
       );
-      if (_connected) _controller.add('#SD;done;/SD');
     }
   }
 
@@ -89,5 +93,15 @@ class MockTransport implements MachineTransport {
 
   void dispose() {
     _controller.close();
+  }
+}
+
+extension MockTransportMaintenance on MockTransport {
+  /// Simula o reabastecimento físico de um reservatório (nível cheio)
+  /// e emite a leitura de níveis atualizada.
+  void refill(int reservoir) {
+    if (reservoir < 1 || reservoir > numReservoirs) return;
+    _levels[reservoir] = 2;
+    if (_connected) _emitLevels();
   }
 }

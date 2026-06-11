@@ -3,6 +3,22 @@ import 'package:smart_drink/core/machine_config.dart';
 import 'package:smart_drink/core/sd_protocol.dart';
 
 void main() {
+  group('Calibration ajustavel', () {
+    tearDown(Calibration.reset);
+
+    test('mlToTimeMs reflete calibragem alterada', () {
+      Calibration.msPerMl = 25;
+      Calibration.valveOpenMs = 200;
+      expect(mlToTimeMs(100), 2700);
+    });
+
+    test('reset volta aos valores de fabrica', () {
+      Calibration.msPerMl = 99;
+      Calibration.reset();
+      expect(mlToTimeMs(50), 1600);
+    });
+  });
+
   group('mlToTimeMs', () {
     test('calibragem 30ms/ml + 100ms de abertura', () {
       expect(mlToTimeMs(50), 1600); // exemplo do documento do protótipo
