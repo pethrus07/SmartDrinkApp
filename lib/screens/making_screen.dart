@@ -13,7 +13,7 @@ class MakingScreen extends StatelessWidget {
     final provider = context.watch<DrinkProvider>();
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -27,12 +27,11 @@ class MakingScreen extends StatelessWidget {
 
                 // Status text
                 Text(
-                  'PREPARANDO SEU DRINK',
+                  'Preparando seu drink',
                   style: TextStyle(
-                    color: SDColors.cyan,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 4,
+                    color: SDColors.textPrimary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -61,45 +60,18 @@ class MakingScreen extends StatelessWidget {
                   );
                 }),
 
-                const SizedBox(height: 32),
-
-                // Command string (debug / dev)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: SDColors.card,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: SDColors.border),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'COMANDO ENVIADO',
-                        style: TextStyle(
-                          color: SDColors.textMuted,
-                          fontSize: 10,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SelectableText(
-                        provider.commandString,
-                        style: TextStyle(
-                          color: SDColors.green,
-                          fontSize: 14,
-                          fontFamily: 'monospace',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                const SizedBox(height: 8),
+                Text(
+                  'Já vai ficar pronto! 🍹',
+                  style: TextStyle(
+                    color: SDColors.textSecondary,
+                    fontSize: 15,
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
 
-                // Válvulas ativas
+                // Ingredientes sendo servidos (sem números técnicos)
                 _ValveIndicators(
                   portions: provider.activePortion,
                   progress: provider.makingProgress,
@@ -158,7 +130,7 @@ class _ProgressRingState extends State<_ProgressRing>
             child: Center(
               child: Icon(
                 Icons.local_bar,
-                color: SDColors.cyan.withOpacity(0.6 + widget.progress * 0.4),
+                color: SDColors.cyan.withValues(alpha: 0.6 + widget.progress * 0.4),
                 size: 50,
               ),
             ),
@@ -211,7 +183,7 @@ class _RingPainter extends CustomPainter {
 
     // Glow
     final glowPaint = Paint()
-      ..color = SDColors.cyan.withOpacity(0.2 * glowIntensity)
+      ..color = SDColors.cyan.withValues(alpha: 0.2 * glowIntensity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 16
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
@@ -265,7 +237,7 @@ class _ValveIndicators extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isActive
-                      ? ing.color.withOpacity(0.2)
+                      ? ing.color.withValues(alpha: 0.2)
                       : SDColors.card,
                   border: Border.all(
                     color: isActive
@@ -276,7 +248,7 @@ class _ValveIndicators extends StatelessWidget {
                   boxShadow: isActive
                       ? [
                           BoxShadow(
-                            color: ing.color.withOpacity(0.4),
+                            color: ing.color.withValues(alpha: 0.4),
                             blurRadius: 10,
                           ),
                         ]
@@ -295,12 +267,15 @@ class _ValveIndicators extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                isActive ? '${portion.timeMs}ms' : '0',
+                isActive ? ing.name : '',
                 style: TextStyle(
                   color: isActive ? ing.color : SDColors.textMuted,
                   fontSize: 9,
                   fontWeight: FontWeight.w600,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
             ],
           ),

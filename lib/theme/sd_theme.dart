@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Identidade visual — direção "Vibrante festivo" (v0.4).
+///
+/// Fundo em gradiente colorido (ver [FestiveBackground]), cards de vidro
+/// (branco translúcido com sombra suave), tipografia arredondada (Poppins),
+/// cantos generosos e botões em pílula. Sem neon/glow agressivo.
 class SDColors {
-  // Base
-  static const bg = Color(0xFF08081A);
-  static const surface = Color(0xFF10102A);
-  static const card = Color(0xFF161640);
-  static const cardHover = Color(0xFF1E1E50);
-  static const border = Color(0xFF252560);
+  // Base / fundo (o gradiente festivo cobre a tela; estes são tons de apoio).
+  static const bg = Color(0xFF2A1248); // roxo profundo (texto sobre botão claro)
+  static const surface = Color(0xFF2E1552); // diálogos / bottom sheets (sólido)
+  static const cardHover = Color(0x33FFFFFF);
+  static const border = Color(0x33FFFFFF); // contorno de vidro (branco 20%)
 
-  // Accents
-  static const cyan = Color(0xFF00E5FF);
-  static const cyanDim = Color(0x4400E5FF);
-  static const purple = Color(0xFFA855F7);
-  static const purpleDim = Color(0x44A855F7);
-  static const orange = Color(0xFFFF6B2B);
-  static const pink = Color(0xFFFF2D8A);
-  static const green = Color(0xFF00E676);
-  static const yellow = Color(0xFFFFD600);
+  /// Card de vidro translúcido sobre o gradiente.
+  static const card = Color(0x24FFFFFF); // branco ~14%
 
-  // Text
-  static const textPrimary = Color(0xFFF0F0FF);
-  static const textSecondary = Color(0xFF9999CC);
-  static const textMuted = Color(0xFF555580);
+  // Acentos vivos (festivos)
+  static const cyan = Color(0xFF22D3EE);
+  static const cyanDim = Color(0x4422D3EE);
+  static const purple = Color(0xFFC084FC);
+  static const purpleDim = Color(0x44C084FC);
+  static const orange = Color(0xFFFF8A3D);
+  static const pink = Color(0xFFFF4D9D);
+  static const green = Color(0xFF34E3A0);
+  static const yellow = Color(0xFFFFD84D);
 
-  // Gradients
-  static const glowCyan = [Color(0xFF00E5FF), Color(0xFF0088FF)];
-  static const glowPurple = [Color(0xFFA855F7), Color(0xFF6B21E8)];
-  static const glowMix = [Color(0xFF00E5FF), Color(0xFFA855F7)];
+  // Texto (claro — sobre vidro/gradiente)
+  static const textPrimary = Color(0xFFFFFFFF);
+  static const textSecondary = Color(0xFFE7DCFF);
+  static const textMuted = Color(0xFFB9A6E0);
 
-  // Drink ingredient colors
+  // Gradientes de acento (botões/realces)
+  static const glowCyan = [Color(0xFF22D3EE), Color(0xFF3B82F6)];
+  static const glowPurple = [Color(0xFFC084FC), Color(0xFF8B5CF6)];
+  static const glowMix = [Color(0xFFFF4D9D), Color(0xFFFF8A3D)];
+
+  /// Gradiente festivo de fundo (usado por [FestiveBackground]).
+  static const festiveBg = [
+    Color(0xFF6D28D9), // roxo
+    Color(0xFFDB2777), // magenta
+    Color(0xFFF97316), // laranja
+  ];
+
+  // Cores dos ingredientes (mantidas — identificam cada reservatório)
   static const drinkColors = [
     Color(0xFF90CAF9), // Vodka
     Color(0xFFA5D6A7), // Gin
@@ -42,67 +56,63 @@ class SDColors {
 
 class SDTheme {
   static ThemeData get theme {
-    return ThemeData(
+    final base = ThemeData(
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: SDColors.bg,
+      scaffoldBackgroundColor: Colors.transparent, // o gradiente festivo cobre
       colorScheme: const ColorScheme.dark(
         primary: SDColors.cyan,
         secondary: SDColors.purple,
         surface: SDColors.surface,
       ),
-      textTheme: GoogleFonts.exo2TextTheme(
-        const TextTheme(
-          displayLarge: TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.w800,
-            color: SDColors.textPrimary,
-            letterSpacing: 2,
-          ),
-          displayMedium: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-            color: SDColors.textPrimary,
-          ),
-          titleLarge: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: SDColors.textPrimary,
-          ),
-          titleMedium: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: SDColors.textPrimary,
-          ),
-          bodyLarge: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            color: SDColors.textSecondary,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: SDColors.textSecondary,
-          ),
-          labelLarge: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: SDColors.textPrimary,
-            letterSpacing: 1.5,
-          ),
+    );
+
+    return base.copyWith(
+      textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).copyWith(
+        displayLarge: GoogleFonts.poppins(
+          fontSize: 38,
+          fontWeight: FontWeight.w800,
+          color: SDColors.textPrimary,
+        ),
+        displayMedium: GoogleFonts.poppins(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: SDColors.textPrimary,
+        ),
+        titleLarge: GoogleFonts.poppins(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: SDColors.textPrimary,
+        ),
+        titleMedium: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: SDColors.textPrimary,
+        ),
+        bodyLarge: GoogleFonts.poppins(
+          fontSize: 16,
+          color: SDColors.textSecondary,
+        ),
+        bodyMedium: GoogleFonts.poppins(
+          fontSize: 14,
+          color: SDColors.textSecondary,
+        ),
+        labelLarge: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: SDColors.textPrimary,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: SDColors.cyan,
-          foregroundColor: SDColors.bg,
+          backgroundColor: SDColors.pink,
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(28), // pílula
           ),
-          textStyle: GoogleFonts.exo2(
+          textStyle: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1,
           ),
         ),
       ),
@@ -110,15 +120,15 @@ class SDTheme {
         color: SDColors.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           side: const BorderSide(color: SDColors.border, width: 1),
         ),
       ),
       sliderTheme: SliderThemeData(
-        activeTrackColor: SDColors.cyan,
+        activeTrackColor: SDColors.pink,
         inactiveTrackColor: SDColors.border,
-        thumbColor: SDColors.cyan,
-        overlayColor: SDColors.cyanDim,
+        thumbColor: Colors.white,
+        overlayColor: SDColors.pink.withValues(alpha: 0.2),
         trackHeight: 8,
         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14),
       ),
@@ -126,37 +136,39 @@ class SDTheme {
   }
 }
 
-// ─── Decorações reutilizáveis ───────────────────────────────
+// ─── Decorações reutilizáveis (cards de vidro festivos) ─────────────
 class SDDecorations {
-  static BoxDecoration glowCard({Color glowColor = SDColors.cyan}) {
+  /// Card de vidro: branco translúcido, contorno sutil e sombra suave —
+  /// "flutua" sobre o gradiente. Mantém a assinatura antiga ([glowColor] é
+  /// usado só como leve tom de realce) para o restyle propagar às telas.
+  static BoxDecoration glowCard({Color glowColor = SDColors.purple}) {
     return BoxDecoration(
       color: SDColors.card,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: glowColor.withOpacity(0.3), width: 1),
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       boxShadow: [
         BoxShadow(
-          color: glowColor.withOpacity(0.15),
-          blurRadius: 20,
-          spreadRadius: -2,
+          color: Colors.black.withValues(alpha: 0.18),
+          blurRadius: 24,
+          spreadRadius: -6,
+          offset: const Offset(0, 10),
         ),
       ],
     );
   }
 
+  /// Estado selecionado/destacado: contorno mais forte na cor de acento.
   static BoxDecoration neonBorder({Color color = SDColors.cyan}) {
     return BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: color.withOpacity(0.6), width: 2),
+      color: SDColors.cardHover,
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: color.withValues(alpha: 0.9), width: 2),
       boxShadow: [
         BoxShadow(
-          color: color.withOpacity(0.3),
-          blurRadius: 12,
-          spreadRadius: -2,
-        ),
-        BoxShadow(
-          color: color.withOpacity(0.1),
-          blurRadius: 30,
-          spreadRadius: 0,
+          color: color.withValues(alpha: 0.25),
+          blurRadius: 18,
+          spreadRadius: -4,
+          offset: const Offset(0, 8),
         ),
       ],
     );

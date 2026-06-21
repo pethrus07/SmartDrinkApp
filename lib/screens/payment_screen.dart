@@ -65,7 +65,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final price = _formatPrice(provider.drinkPriceCents);
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -90,7 +90,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   const SizedBox(width: 16),
                   Text(
-                    'PAGAMENTO',
+                    'Pagamento',
                     style: TextStyle(
                       color: SDColors.cyan,
                       fontSize: 22,
@@ -103,10 +103,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: SDColors.yellow.withOpacity(0.1),
+                      color: SDColors.yellow.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border:
-                          Border.all(color: SDColors.yellow.withOpacity(0.4)),
+                          Border.all(color: SDColors.yellow.withValues(alpha: 0.4)),
                     ),
                     child: Text(
                       'SIMULAÇÃO',
@@ -169,7 +169,7 @@ class _ChoosePanel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'TOTAL A PAGAR',
+          'Total a pagar',
           style: TextStyle(
             color: SDColors.textMuted,
             fontSize: 12,
@@ -199,7 +199,7 @@ class _ChoosePanel extends StatelessWidget {
             const SizedBox(width: 20),
             _MethodCard(
               icon: Icons.credit_card,
-              label: 'CARTÃO',
+              label: 'Cartão',
               color: SDColors.purple,
               onTap: () => onChoose(_PayMethod.card),
             ),
@@ -233,10 +233,10 @@ class _MethodCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: SDColors.card,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               blurRadius: 24,
               spreadRadius: 2,
             ),
@@ -333,7 +333,7 @@ class _WaitingPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             NeonButton(
-              label: 'CANCELAR',
+              label: 'Cancelar',
               icon: Icons.close,
               color: SDColors.pink,
               height: 46,
@@ -342,7 +342,7 @@ class _WaitingPanel extends StatelessWidget {
             const SizedBox(width: 14),
             // Atalho de demo: não esperar os 3s da simulação.
             NeonButton(
-              label: 'SIMULAR APROVAÇÃO',
+              label: 'Simular aprovação',
               icon: Icons.check,
               color: SDColors.green,
               height: 46,
@@ -369,11 +369,11 @@ class _ApprovedPanel extends StatelessWidget {
           height: 110,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: SDColors.green.withOpacity(0.12),
+            color: SDColors.green.withValues(alpha: 0.12),
             border: Border.all(color: SDColors.green, width: 2),
             boxShadow: [
               BoxShadow(
-                color: SDColors.green.withOpacity(0.35),
+                color: SDColors.green.withValues(alpha: 0.35),
                 blurRadius: 30,
               ),
             ],
@@ -382,7 +382,7 @@ class _ApprovedPanel extends StatelessWidget {
         ),
         const SizedBox(height: 22),
         Text(
-          'PAGAMENTO APROVADO',
+          'Pagamento aprovado',
           style: TextStyle(
             color: SDColors.green,
             fontSize: 20,

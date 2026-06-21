@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import '../models/drink_models.dart';
 
 /// Widget que gera uma ilustração de copo de drink colorido
@@ -80,8 +79,8 @@ class _DrinkGlassPainter extends CustomPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              ing.color.withOpacity(0.9),
-              ing.color.withOpacity(0.6),
+              ing.color.withValues(alpha: 0.9),
+              ing.color.withValues(alpha: 0.6),
             ],
           ).createShader(Rect.fromLTRB(0, layerTop, w, currentBottom));
 
@@ -93,7 +92,7 @@ class _DrinkGlassPainter extends CustomPainter {
         // Linha divisória sutil entre camadas
         if (currentBottom < glassBottom) {
           final dividerPaint = Paint()
-            ..color = Colors.white.withOpacity(0.15)
+            ..color = Colors.white.withValues(alpha: 0.15)
             ..strokeWidth = 1;
           canvas.drawLine(
             Offset(0, currentBottom),
@@ -112,8 +111,8 @@ class _DrinkGlassPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.3),
-            Colors.white.withOpacity(0.0),
+            Colors.white.withValues(alpha: 0.3),
+            Colors.white.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromLTRB(0, surfaceY, w, surfaceY + 8));
       canvas.drawRect(
@@ -126,7 +125,7 @@ class _DrinkGlassPainter extends CustomPainter {
 
     // ── Outline do copo ──
     final outlinePaint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
+      ..color = Colors.white.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
@@ -140,12 +139,12 @@ class _DrinkGlassPainter extends CustomPainter {
       ..lineTo(topLeft + 7, glassTop + 4)
       ..close();
     final reflectPaint = Paint()
-      ..color = Colors.white.withOpacity(0.15);
+      ..color = Colors.white.withValues(alpha: 0.15);
     canvas.drawPath(reflectPath, reflectPaint);
 
     // ── Base do copo ──
     final basePaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     canvas.drawLine(
@@ -156,7 +155,7 @@ class _DrinkGlassPainter extends CustomPainter {
 
     // ── Canudo (decorativo) ──
     final strawPaint = Paint()
-      ..color = Colors.white.withOpacity(0.4)
+      ..color = Colors.white.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round;

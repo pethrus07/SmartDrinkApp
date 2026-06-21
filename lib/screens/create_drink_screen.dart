@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/drink_models.dart';
 import '../services/drink_provider.dart';
 import '../theme/sd_theme.dart';
+import '../util/image_pick.dart';
 import '../widgets/cup_widget.dart';
 import '../widgets/neon_button.dart';
 import '../widgets/drink_illustration.dart';
@@ -19,6 +22,8 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
   final List<DrinkPortion> _portions = [];
+  String? _imageData;
+  bool _pickingImage = false;
 
   int get _totalMl => _portions.fold(0, (s, p) => s + p.ml);
   int get _totalTimeMs => _portions.fold(0, (s, p) => s + p.timeMs);
@@ -55,6 +60,17 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
     });
   }
 
+  Future<void> _pickImage() async {
+    if (_pickingImage) return;
+    setState(() => _pickingImage = true);
+    try {
+      final data = await pickDrinkImageBase64();
+      if (data != null && mounted) setState(() => _imageData = data);
+    } finally {
+      if (mounted) setState(() => _pickingImage = false);
+    }
+  }
+
   void _save() {
     if (!_isValid) return;
     final provider = context.read<DrinkProvider>();
@@ -74,6 +90,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
       portions: _portions
           .map((p) => DrinkPortion(reservoir: p.reservoir, ml: p.ml))
           .toList(),
+      imageData: _imageData,
     );
     Navigator.of(context).pop();
   }
@@ -109,7 +126,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
                   const Icon(Icons.add_circle, color: SDColors.purple, size: 24),
                   const SizedBox(width: 10),
                   Text(
-                    'NOVO DRINK',
+                    'Novo drink',
                     style: TextStyle(
                       color: SDColors.purple,
                       fontSize: 20,
@@ -147,6 +164,15 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
                         label: 'Descrição (opcional)',
                         hint: 'Auto-gerada se vazio',
                         onChanged: (_) => setState(() {}),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Foto do drink (opcional)
+                      _ImagePickerField(
+                        imageData: _imageData,
+                        busy: _pickingImage,
+                        onPick: _pickImage,
+                        onRemove: () => setState(() => _imageData = null),
                       ),
                       const SizedBox(height: 20),
 
@@ -206,7 +232,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
                             color: SDColors.card,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: ing.color.withOpacity(0.3),
+                              color: ing.color.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Row(
@@ -278,7 +304,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
                       if (available.isNotEmpty) ...[
                         const SizedBox(height: 12),
                         Text(
-                          'ADICIONAR',
+                          'Adicionar',
                           style: TextStyle(
                             color: SDColors.textMuted,
                             fontSize: 11,
@@ -299,7 +325,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    color: ing.color.withOpacity(0.4),
+                                    color: ing.color.withValues(alpha: 0.4),
                                   ),
                                 ),
                                 child: Row(
@@ -332,7 +358,7 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
 
               // ── Botão salvar ──
               NeonButton(
-                label: 'SALVAR DRINK',
+                label: 'Salvar drink',
                 icon: Icons.save,
                 color: SDColors.green,
                 expanded: true,
@@ -342,6 +368,97 @@ class _CreateDrinkDialogState extends State<CreateDrinkDialog> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ─── Campo de foto do drink ─────────────────────────────────
+class _ImagePickerField extends StatelessWidget {
+  final String? imageData;
+  final bool busy;
+  final VoidCallback onPick;
+  final VoidCallback onRemove;
+
+  const _ImagePickerField({
+    required this.imageData,
+    required this.busy,
+    required this.onPick,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasImage = imageData != null && imageData!.isNotEmpty;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Preview (ou placeholder) tocável.
+        GestureDetector(
+          onTap: busy ? null : onPick,
+          child: Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: SDColors.card,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: SDColors.border),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: busy
+                ? const Center(
+                    child: SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                : hasImage
+                    ? Image.memory(base64Decode(imageData!), fit: BoxFit.cover)
+                    : Icon(Icons.add_a_photo_outlined,
+                        color: SDColors.textMuted, size: 26),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Foto do drink (opcional)',
+                style: TextStyle(
+                  color: SDColors.textMuted,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: busy ? null : onPick,
+                    icon: const Icon(Icons.image_outlined, size: 18),
+                    label: Text(hasImage ? 'Trocar foto' : 'Adicionar foto'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: SDColors.cyan,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
+                  if (hasImage)
+                    TextButton.icon(
+                      onPressed: onRemove,
+                      icon: const Icon(Icons.delete_outline, size: 18),
+                      label: const Text('Remover'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: SDColors.pink,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -369,7 +486,7 @@ class _InputField extends StatelessWidget {
         labelText: label,
         hintText: hint,
         labelStyle: TextStyle(color: SDColors.textMuted, fontSize: 13),
-        hintStyle: TextStyle(color: SDColors.textMuted.withOpacity(0.5)),
+        hintStyle: TextStyle(color: SDColors.textMuted.withValues(alpha: 0.5)),
         filled: true,
         fillColor: SDColors.card,
         border: OutlineInputBorder(

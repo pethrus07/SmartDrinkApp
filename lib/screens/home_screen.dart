@@ -6,7 +6,7 @@ import '../theme/sd_theme.dart';
 import '../widgets/drink_card.dart';
 import '../widgets/cup_widget.dart';
 import '../widgets/neon_button.dart';
-import '../widgets/drink_illustration.dart';
+import '../widgets/drink_thumb.dart';
 import '../widgets/pin_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
     final isLandscape = screenSize.width > screenSize.height;
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: isLandscape
             ? _LandscapeLayout(provider: provider, selected: selected)
@@ -151,11 +151,11 @@ class _Header extends StatelessWidget {
         const Spacer(),
         // Subtítulo
         Text(
-          'ESCOLHA SEU DRINK',
+          'Escolha seu drink',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: SDColors.textMuted,
-                letterSpacing: 3,
-                fontSize: 12,
+                color: SDColors.textSecondary,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
               ),
         ),
         const SizedBox(width: 16),
@@ -195,7 +195,7 @@ class _DrinksGrid extends StatelessWidget {
         crossAxisCount: crossCount,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 1.35,
+        childAspectRatio: 1.0,
       ),
       itemCount: allDrinks.length + 1, // +1 para "Personalizar"
       itemBuilder: (context, index) {
@@ -231,7 +231,7 @@ class _CustomDrinkCard extends StatelessWidget {
           color: SDColors.card,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: SDColors.purple.withOpacity(0.4),
+            color: SDColors.purple.withValues(alpha: 0.4),
             width: 1.5,
             strokeAlign: BorderSide.strokeAlignInside,
           ),
@@ -243,19 +243,18 @@ class _CustomDrinkCard extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: SDColors.purple.withOpacity(0.15),
-                border: Border.all(color: SDColors.purple.withOpacity(0.3)),
+                color: SDColors.purple.withValues(alpha: 0.15),
+                border: Border.all(color: SDColors.purple.withValues(alpha: 0.3)),
               ),
               child: const Icon(Icons.tune, color: SDColors.purple, size: 30),
             ),
             const SizedBox(height: 12),
             Text(
-              'PERSONALIZAR',
+              'Personalizar',
               style: TextStyle(
                 color: SDColors.purple,
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
-                letterSpacing: 2,
               ),
             ),
             const SizedBox(height: 4),
@@ -288,13 +287,18 @@ class _SidePanel extends StatelessWidget {
       child: Column(
         children: [
           if (selected != null) ...[
-            // Copo
-            CupWidget(
-              portions: selected!.portions,
-              height: 200,
-              width: 120,
+            // Foto do drink (ou copo ilustrado, se não houver imagem)
+            DrinkThumb(
+              drink: selected!,
+              size: 168,
+              radius: 24,
+              fallback: CupWidget(
+                portions: selected!.portions,
+                height: 168,
+                width: 104,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Nome do drink
             Text(
@@ -304,72 +308,79 @@ class _SidePanel extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Ingredientes listados
-            ...selected!.portions.map((p) {
-              final ing = defaultIngredients.firstWhere(
-                (i) => i.reservoir == p.reservoir,
-                orElse: () => defaultIngredients[0],
-              );
-              final pct = ((p.ml / cupMl) * 100).round();
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
+            // Miolo rolável (ingredientes + tempo) — botões ficam fixos embaixo.
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: ing.color,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        ing.name,
-                        style: TextStyle(
-                          color: SDColors.textSecondary,
-                          fontSize: 13,
+                    ...selected!.portions.map((p) {
+                      final ing = defaultIngredients.firstWhere(
+                        (i) => i.reservoir == p.reservoir,
+                        orElse: () => defaultIngredients[0],
+                      );
+                      final pct = ((p.ml / cupMl) * 100).round();
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: ing.color,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                ing.name,
+                                style: TextStyle(
+                                  color: SDColors.textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '$pct% · ${p.ml}ml',
+                              style: TextStyle(
+                                color: SDColors.textMuted,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    Text(
-                      '$pct% · ${p.ml}ml',
-                      style: TextStyle(
-                        color: SDColors.textMuted,
-                        fontSize: 12,
-                      ),
+                      );
+                    }),
+                    const SizedBox(height: 8),
+                    Divider(color: SDColors.border, height: 1),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Tempo',
+                            style: TextStyle(
+                                color: SDColors.textMuted, fontSize: 12)),
+                        Text(
+                          '${(selected!.totalTimeMs / 1000).toStringAsFixed(1)}s',
+                          style: TextStyle(
+                            color: SDColors.cyan,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              );
-            }),
-
-            const SizedBox(height: 8),
-            Divider(color: SDColors.border, height: 1),
-            const SizedBox(height: 8),
-
-            // Tempo total
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Tempo', style: TextStyle(color: SDColors.textMuted, fontSize: 12)),
-                Text(
-                  '${(selected!.totalTimeMs / 1000).toStringAsFixed(1)}s',
-                  style: TextStyle(
-                    color: SDColors.cyan,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
+              ),
             ),
-
-            const Spacer(),
+            const SizedBox(height: 12),
 
             // Botão personalizar
             NeonButton(
-              label: 'AJUSTAR',
+              label: 'Ajustar',
               icon: Icons.tune,
               color: SDColors.purple,
               expanded: true,
@@ -388,7 +399,7 @@ class _SidePanel extends StatelessWidget {
               const SizedBox(height: 8),
             ],
             NeonButton(
-              label: 'FAZER DRINK',
+              label: 'Fazer drink',
               icon: Icons.local_bar,
               color: SDColors.cyan,
               expanded: true,
@@ -430,10 +441,15 @@ class _CompactPreview extends StatelessWidget {
       decoration: SDDecorations.glowCard(),
       child: Row(
         children: [
-          CupWidget(
-            portions: selected.portions,
-            height: 80,
-            width: 50,
+          DrinkThumb(
+            drink: selected,
+            size: 80,
+            radius: 16,
+            fallback: CupWidget(
+              portions: selected.portions,
+              height: 80,
+              width: 50,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -478,7 +494,7 @@ class _BottomActions extends StatelessWidget {
         if (selected != null) ...[
           Expanded(
             child: NeonButton(
-              label: 'AJUSTAR',
+              label: 'Ajustar',
               icon: Icons.tune,
               color: SDColors.purple,
               expanded: true,
@@ -491,7 +507,7 @@ class _BottomActions extends StatelessWidget {
         Expanded(
           flex: selected != null ? 2 : 1,
           child: NeonButton(
-            label: 'FAZER DRINK',
+            label: 'Fazer drink',
             icon: Icons.local_bar,
             color: SDColors.cyan,
             expanded: true,

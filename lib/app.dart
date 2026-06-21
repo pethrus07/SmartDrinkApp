@@ -10,6 +10,7 @@ import 'screens/payment_screen.dart';
 import 'screens/error_screen.dart';
 import 'services/drink_provider.dart';
 import 'theme/sd_theme.dart';
+import 'widgets/festive_background.dart';
 
 class SmartDrinkApp extends StatelessWidget {
   const SmartDrinkApp({super.key});
@@ -20,7 +21,9 @@ class SmartDrinkApp extends StatelessWidget {
       title: 'Smart Drink',
       debugShowCheckedModeBanner: false,
       theme: SDTheme.theme,
-      home: const _ScreenRouter(),
+      // O gradiente festivo fica atrás de tudo; as telas usam Scaffold
+      // transparente e "flutuam" sobre ele.
+      home: const FestiveBackground(child: _ScreenRouter()),
     );
   }
 }
