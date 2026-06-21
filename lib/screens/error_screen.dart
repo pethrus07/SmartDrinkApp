@@ -17,7 +17,7 @@ class ErrorScreen extends StatelessWidget {
     final provider = context.watch<DrinkProvider>();
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -32,11 +32,11 @@ class ErrorScreen extends StatelessWidget {
                     height: 110,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: SDColors.pink.withOpacity(0.12),
+                      color: SDColors.pink.withValues(alpha: 0.12),
                       border: Border.all(color: SDColors.pink, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: SDColors.pink.withOpacity(0.35),
+                          color: SDColors.pink.withValues(alpha: 0.35),
                           blurRadius: 30,
                         ),
                       ],
@@ -77,7 +77,7 @@ class ErrorScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 40),
                   NeonButton(
-                    label: 'VOLTAR AO INÍCIO',
+                    label: 'Voltar ao início',
                     icon: Icons.home,
                     color: SDColors.cyan,
                     height: 52,

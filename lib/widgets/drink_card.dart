@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/drink_models.dart';
 import '../theme/sd_theme.dart';
 import 'drink_illustration.dart';
+import 'drink_thumb.dart';
 
 class DrinkCard extends StatelessWidget {
   final DrinkPreset drink;
@@ -35,10 +36,10 @@ class DrinkCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: SDColors.pink.withOpacity(0.15),
+                    color: SDColors.pink.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
                     border:
-                        Border.all(color: SDColors.pink.withOpacity(0.6)),
+                        Border.all(color: SDColors.pink.withValues(alpha: 0.6)),
                   ),
                   child: Text(
                     'EM FALTA',
@@ -64,7 +65,7 @@ class DrinkCard extends StatelessWidget {
         decoration: isSelected
             ? SDDecorations.neonBorder(color: SDColors.cyan)
                 .copyWith(color: SDColors.card)
-            : SDDecorations.glowCard(glowColor: SDColors.purple.withOpacity(0.3))
+            : SDDecorations.glowCard(glowColor: SDColors.purple.withValues(alpha: 0.3))
                 ,
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -73,9 +74,14 @@ class DrinkCard extends StatelessWidget {
             // Ilustração do drink + nome
             Row(
               children: [
-                DrinkIllustration(
-                  portions: drink.portions,
+                DrinkThumb(
+                  drink: drink,
                   size: 48,
+                  radius: 12,
+                  fallback: DrinkIllustration(
+                    portions: drink.portions,
+                    size: 48,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -160,7 +166,7 @@ class _IngredientBars extends StatelessWidget {
             final fraction = p.ml / totalMl;
             return Expanded(
               flex: (fraction * 100).round().clamp(1, 100),
-              child: Container(color: ing.color.withOpacity(0.8)),
+              child: Container(color: ing.color.withValues(alpha: 0.8)),
             );
           }).toList(),
         ),

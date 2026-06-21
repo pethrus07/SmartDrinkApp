@@ -99,7 +99,19 @@ class DrinkProvider extends ChangeNotifier {
   // ─── Drinks customizados (criados pelo owner) ─────────────
   final List<DrinkPreset> _userDrinks = [];
   List<DrinkPreset> get userDrinks => _userDrinks;
-  List<DrinkPreset> get allDrinks => [...presetDrinks, ..._userDrinks];
+
+  /// Catálogo completo: presets (com a imagem definida no admin, se houver) +
+  /// drinks do owner.
+  List<DrinkPreset> get allDrinks => [
+        for (final p in presetDrinks) _withPresetImage(p),
+        ..._userDrinks,
+      ];
+
+  /// Aplica o override de imagem do admin sobre um preset de fábrica.
+  DrinkPreset _withPresetImage(DrinkPreset preset) {
+    final override = _settings.presetImageOverrides[preset.id];
+    return override == null ? preset : preset.copyWith(imageData: override);
+  }
 
   // ─── Getters calculados ───────────────────────────────────
   List<DrinkPortion> get activePortion =>
@@ -303,6 +315,7 @@ class DrinkProvider extends ChangeNotifier {
     required String name,
     required String description,
     required List<DrinkPortion> portions,
+    String? imageData,
   }) async {
     final id = 'user_${DateTime.now().millisecondsSinceEpoch}';
     _userDrinks.add(DrinkPreset(
@@ -311,6 +324,7 @@ class DrinkProvider extends ChangeNotifier {
       emoji: '🍸',
       description: description,
       portions: List.of(portions),
+      imageData: imageData,
     ));
     notifyListeners();
     await _repository.saveUserDrinks(_userDrinks);
@@ -318,8 +332,35 @@ class DrinkProvider extends ChangeNotifier {
 
   Future<void> deleteDrink(String id) async {
     _userDrinks.removeWhere((d) => d.id == id);
+    _settings.presetImageOverrides.remove(id); // limpa imagem órfã, se houver
     notifyListeners();
     await _repository.saveUserDrinks(_userDrinks);
+  }
+
+  /// Define (ou remove, com [imageData] nulo) a foto de um drink — funciona
+  /// tanto para drinks do owner quanto para os de fábrica (override).
+  Future<void> setDrinkImage(String drinkId, String? imageData) async {
+    final idx = _userDrinks.indexWhere((d) => d.id == drinkId);
+    if (idx != -1) {
+      _userDrinks[idx] = _userDrinks[idx]
+          .copyWith(imageData: imageData, clearImage: imageData == null);
+      notifyListeners();
+      await _repository.saveUserDrinks(_userDrinks);
+      return;
+    }
+    // Drink de fábrica: guarda/limpa o override.
+    if (imageData == null) {
+      _settings.presetImageOverrides.remove(drinkId);
+    } else {
+      _settings.presetImageOverrides[drinkId] = imageData;
+    }
+    // Mantém o selecionado em sincronia para refletir na hora.
+    if (_selectedPreset?.id == drinkId) {
+      _selectedPreset = _selectedPreset!
+          .copyWith(imageData: imageData, clearImage: imageData == null);
+    }
+    notifyListeners();
+    await _persistSettings();
   }
 
   // ─── Fazer o drink ────────────────────────────────────────
@@ -330,6 +371,7 @@ class DrinkProvider extends ChangeNotifier {
     _isDispensing = true;
     _makingProgress = 0;
     _commandString = _machine.commandFor(activePortion);
+    final served = List<DrinkPortion>.of(activePortion);
     _currentScreen = AppScreen.making;
     notifyListeners();
 
@@ -341,6 +383,7 @@ class DrinkProvider extends ChangeNotifier {
           notifyListeners();
         },
       );
+      await _recordServed(served); // contabiliza nas estatísticas (admin)
       _currentScreen = AppScreen.done;
     } catch (_) {
       // TODO(ux): tela de erro dedicada ("verifique a máquina").

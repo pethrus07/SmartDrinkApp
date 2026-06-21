@@ -54,7 +54,7 @@ class _DoneScreenState extends State<DoneScreen>
     final provider = context.watch<DrinkProvider>();
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: AnimatedBuilder(
@@ -82,12 +82,12 @@ class _DoneScreenState extends State<DoneScreen>
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: SDColors.cyan.withOpacity(0.4),
+                                color: SDColors.cyan.withValues(alpha: 0.4),
                                 blurRadius: 40,
                                 spreadRadius: 5,
                               ),
                               BoxShadow(
-                                color: SDColors.purple.withOpacity(0.3),
+                                color: SDColors.purple.withValues(alpha: 0.3),
                                 blurRadius: 60,
                                 spreadRadius: 10,
                               ),
@@ -144,7 +144,7 @@ class _DoneScreenState extends State<DoneScreen>
                         const SizedBox(height: 48),
 
                         NeonButton(
-                          label: 'NOVO DRINK',
+                          label: 'Novo drink',
                           icon: Icons.refresh,
                           color: SDColors.cyan,
                           onPressed: () => provider.goHome(),

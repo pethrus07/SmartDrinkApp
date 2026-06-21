@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../core/machine_config.dart';
@@ -50,16 +53,51 @@ class DrinkPreset {
   final String description;
   final List<DrinkPortion> portions;
 
+  /// Foto do drink em base64 (PNG/JPEG), ou `null` quando não há imagem —
+  /// nesse caso a UI cai para a ilustração gerada do copo. Guardada inline
+  /// (e não como caminho de arquivo) para funcionar igual em web e Android.
+  final String? imageData;
+
   const DrinkPreset({
     required this.id,
     required this.name,
     required this.emoji,
     required this.description,
     required this.portions,
+    this.imageData,
   });
 
   int get totalMl => portions.fold(0, (sum, p) => sum + p.ml);
   int get totalTimeMs => portions.fold(0, (sum, p) => sum + p.timeMs);
+
+  bool get hasImage => imageData != null && imageData!.isNotEmpty;
+
+  /// Bytes decodificados da imagem (ou `null`). Decodifica sob demanda; a UI
+  /// deve guardar o resultado se for repintar com frequência.
+  Uint8List? get imageBytes {
+    if (!hasImage) return null;
+    try {
+      return base64Decode(imageData!);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  DrinkPreset copyWith({
+    String? name,
+    String? description,
+    List<DrinkPortion>? portions,
+    String? imageData,
+    bool clearImage = false,
+  }) =>
+      DrinkPreset(
+        id: id,
+        name: name ?? this.name,
+        emoji: emoji,
+        description: description ?? this.description,
+        portions: portions ?? this.portions,
+        imageData: clearImage ? null : (imageData ?? this.imageData),
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -67,6 +105,7 @@ class DrinkPreset {
         'emoji': emoji,
         'description': description,
         'portions': portions.map((p) => p.toJson()).toList(),
+        if (imageData != null) 'imageData': imageData,
       };
 
   factory DrinkPreset.fromJson(Map<String, dynamic> json) => DrinkPreset(
@@ -77,6 +116,7 @@ class DrinkPreset {
         portions: (json['portions'] as List)
             .map((p) => DrinkPortion.fromJson(p as Map<String, dynamic>))
             .toList(),
+        imageData: json['imageData'] as String?,
       );
 }
 

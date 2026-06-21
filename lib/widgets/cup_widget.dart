@@ -85,10 +85,10 @@ class _CupPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
-    final margin = 12.0;
+    const margin = 12.0;
 
     // Cup outline (trapezoid shape)
-    final cupTop = 20.0;
+    const cupTop = 20.0;
     final cupBottom = h - 10;
     final topWidth = w - margin * 2;
     final bottomWidth = w * 0.65;
@@ -126,7 +126,7 @@ class _CupPainter extends CustomPainter {
 
         // Layer fill
         final layerPaint = Paint()
-          ..color = ing.color.withOpacity(0.7)
+          ..color = ing.color.withValues(alpha: 0.7)
           ..style = PaintingStyle.fill;
 
         canvas.drawRect(
@@ -140,8 +140,8 @@ class _CupPainter extends CustomPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              ing.color.withOpacity(0.3),
-              ing.color.withOpacity(0.1),
+              ing.color.withValues(alpha: 0.3),
+              ing.color.withValues(alpha: 0.1),
             ],
           ).createShader(Rect.fromLTRB(0, layerTop, w, currentBottom));
         canvas.drawRect(
@@ -156,7 +156,7 @@ class _CupPainter extends CustomPainter {
       if (fillRatio > 0.01) {
         final waveTop = cupBottom - fillHeight;
         final wavePaint = Paint()
-          ..color = Colors.white.withOpacity(0.15)
+          ..color = Colors.white.withValues(alpha: 0.15)
           ..style = PaintingStyle.fill;
 
         final wavePath = Path();
@@ -178,7 +178,7 @@ class _CupPainter extends CustomPainter {
 
     // Cup outline stroke
     final outlinePaint = Paint()
-      ..color = SDColors.cyan.withOpacity(0.5)
+      ..color = SDColors.cyan.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
@@ -187,7 +187,7 @@ class _CupPainter extends CustomPainter {
 
     // Glow effect on outline
     final glowPaint = Paint()
-      ..color = SDColors.cyan.withOpacity(0.15)
+      ..color = SDColors.cyan.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);

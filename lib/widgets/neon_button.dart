@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../theme/sd_theme.dart';
 
+/// Botão principal em **pílula** com gradiente festivo e sombra suave.
+///
+/// (Mantém o nome `NeonButton` para não quebrar os imports das telas — o visual
+/// agora é o da v0.4: cantos totalmente arredondados, sem glow neon.)
 class NeonButton extends StatefulWidget {
   final String label;
   final IconData? icon;
@@ -14,7 +18,7 @@ class NeonButton extends StatefulWidget {
     required this.label,
     this.icon,
     this.onPressed,
-    this.color = SDColors.cyan,
+    this.color = SDColors.pink,
     this.expanded = false,
     this.height = 56,
   });
@@ -29,6 +33,7 @@ class _NeonButtonState extends State<NeonButton> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
+    final radius = widget.height / 2; // pílula
 
     Widget button = GestureDetector(
       onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
@@ -48,29 +53,27 @@ class _NeonButtonState extends State<NeonButton> {
               ? LinearGradient(
                   colors: [
                     widget.color,
-                    widget.color.withOpacity(0.7),
+                    Color.lerp(widget.color, Colors.white, 0.18)!,
                   ],
                 )
               : null,
-          color: enabled ? null : SDColors.border,
-          borderRadius: BorderRadius.circular(16),
+          color: enabled ? null : Colors.white.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(radius),
           boxShadow: enabled && !_pressed
               ? [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.4),
-                    blurRadius: 16,
-                    spreadRadius: -2,
-                    offset: const Offset(0, 4),
-                  ),
-                  BoxShadow(
-                    color: widget.color.withOpacity(0.15),
-                    blurRadius: 40,
-                    spreadRadius: 0,
+                    color: widget.color.withValues(alpha: 0.45),
+                    blurRadius: 18,
+                    spreadRadius: -4,
+                    offset: const Offset(0, 8),
                   ),
                 ]
               : [],
         ),
-        transform: _pressed ? (Matrix4.identity()..scale(0.97)) : Matrix4.identity(),
+        transform: _pressed
+            ? Matrix4.diagonal3Values(0.97, 0.97, 1)
+            : Matrix4.identity(),
+        transformAlignment: Alignment.center,
         child: Row(
           mainAxisSize: widget.expanded ? MainAxisSize.max : MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -78,18 +81,22 @@ class _NeonButtonState extends State<NeonButton> {
             if (widget.icon != null) ...[
               Icon(
                 widget.icon,
-                color: enabled ? SDColors.bg : SDColors.textMuted,
+                color: enabled ? Colors.white : SDColors.textMuted,
                 size: 22,
               ),
               const SizedBox(width: 10),
             ],
-            Text(
-              widget.label,
-              style: TextStyle(
-                color: enabled ? SDColors.bg : SDColors.textMuted,
-                fontSize: 17,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1,
+            Flexible(
+              child: Text(
+                widget.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: enabled ? Colors.white : SDColors.textMuted,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

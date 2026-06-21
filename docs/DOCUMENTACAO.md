@@ -1,6 +1,6 @@
 # Smart Drink — Documentação do App
 
-**Versão:** 0.3 (demo funcional completa) · **Data:** junho/2026
+**Versão:** 0.4 (redesign vibrante + foto nos drinks) · **Data:** junho/2026
 **Plataforma:** Flutter · roda em Chrome/desktop para demonstração e em tablet Android (kiosk) na máquina
 
 ---
@@ -11,7 +11,7 @@ O Smart Drink é uma máquina de drinks automatizada: um gabinete com 6 reservat
 
 Nesta versão, **tudo funciona de ponta a ponta sem hardware**: a eletrônica da máquina é substituída por um simulador interno que se comporta como o firmware real (responde níveis de estoque, consome bebida a cada drink servido, sinaliza a conclusão do preparo), e o pagamento é uma simulação visual do fluxo previsto. Isso permite demonstrar o produto completo hoje e, quando a placa real estiver pronta, trocar o simulador pela comunicação física sem alterar nenhuma tela.
 
-O estado atual foi **testado e validado** (jun/2026). O próximo ciclo é o redesign visual descrito na seção 5.
+O estado atual foi **testado e validado** (jun/2026). O redesign visual (v0.4, direção "vibrante festivo") e a foto nos drinks já foram aplicados — ver seção 5.
 
 ---
 
@@ -174,62 +174,49 @@ A máquina simulada é o padrão; `--dart-define=USE_MOCK=false` ativará o tran
 
 ---
 
-## 5. Melhorias planejadas — Redesign visual (v0.4)
+## 5. Redesign visual v0.4 — "Vibrante festivo" (implementado)
 
-> Origem: validação de jun/2026. **Funcionalidades aprovadas** — os pontos abaixo são exclusivamente de apresentação visual e linguagem. Arquitetura, fluxo e regras não mudam.
+> Aplicado em jun/2026 a partir da validação. Direção escolhida: **C — Vibrante festivo**. Arquitetura, fluxo e regras de negócio **não mudaram** — a transformação é de apresentação/linguagem, mais a nova feature de foto (5.3).
 
-### 5.1 Diagnóstico
+### 5.1 Tema
 
-O tema atual é escuro/industrial com estética **neon**: bordas brilhantes, tudo em caps lock com espaçamento largo, números técnicos espalhados (ms, %, strings de comando). Funciona como painel de máquina, não como produto comercial. Direção desejada: **amigável, comercial, simples, limpo e moderno.**
+Saímos do escuro/neon para uma cara comercial e festiva:
 
-### 5.2 Tema geral
-
-| Hoje | Como deve ficar |
+| Antes (neon) | Agora (v0.4) |
 |---|---|
-| Fundo escuro chapado + neon | Base clara (ou dark suave) com acentos coloridos |
-| Bordas com glow | Sombras suaves, cards "flutuando", sem contorno neon |
-| TUDO EM CAPS espaçado | Sentence case ("Escolha seu drink"); caps só em micro-rótulos |
-| Tipografia pesada/condensada | Fonte arredondada e amigável (Poppins, Nunito ou Baloo 2 — google_fonts já está no projeto) |
-| Cantos 12–14 px | Cantos generosos (20–28 px), botões em pílula |
+| Fundo escuro chapado + glow | **Gradiente festivo** (roxo → magenta → laranja) com halos de cor — `widgets/festive_background.dart`, montado uma vez em `app.dart` atrás de todas as telas |
+| Bordas com glow neon | **Cards de vidro**: branco translúcido, contorno sutil e sombra suave (`SDDecorations.glowCard`) |
+| TUDO EM CAPS espaçado | **Sentence case** ("Escolha seu drink") no fluxo do cliente; caps só em micro-rótulos do admin |
+| Tipografia pesada (Exo 2) | **Poppins** (arredondada e amigável), via `google_fonts` |
+| Cantos 12–14 px | Cantos 20–28 px; **botões em pílula** (`widgets/neon_button.dart`) |
 
-**Direções possíveis (decidir uma):**
+Como o tema é centralizado e as telas só consomem os tokens de `theme/sd_theme.dart`, foi ele que transformou o app inteiro; as telas só precisaram de Scaffold transparente (para o gradiente aparecer) e ajuste de microcopy.
 
-- **A — Clean claro "juice bar"** *(recomendada)*: fundo off-white, cards brancos com sombra suave, cor de destaque por drink. Máxima leitura de "comercial e amigável".
-- **B — Dark premium suave**: mantém o escuro (conversa com o gabinete preto da máquina), mas troca neon por gradientes suaves. Clima "bar à noite".
-- **C — Vibrante festivo**: gradientes coloridos de fundo, para eventos/festas.
+### 5.2 Linguagem do cliente (cliente ≠ técnico)
 
-⚠️ O gabinete físico é preto com ciano neon — decidir se o app **acompanha a máquina** (B) ou **contrasta para acolher** (A/C). É decisão de marca.
+- A string `#SD;...` **saiu** da tela de preparo; os tempos em ms também — o preparo agora mostra os **ingredientes sendo servidos** (nomes), o anel de progresso e uma frase simpática.
+- O fluxo do cliente foi para sentence case; o **admin permanece denso e técnico** (ferramenta do dono), recebendo só o novo tema.
 
-### 5.3 Representação dos drinks (mais chamativa)
+### 5.3 Foto nos drinks (nova feature)
 
-- A ilustração do copo vira o **protagonista do card**: maior, com **gradiente nas cores reais dos ingredientes** da receita, guarnição (rodela de limão, canudo, gelo) e leve animação na seleção.
-- Card simplificado: ilustração + nome + **uma** linha secundária. Sai do card a barra de ingredientes, os ml e os segundos — informação demais para a vitrine.
-- Médio prazo (fora deste ciclo): ilustrações próprias por receita ou fotos reais.
+O drink passou a ter uma **foto opcional** (campo `imageData` em `DrinkPreset`, base64 — funciona igual em web e Android, sem caminho de arquivo):
 
-### 5.4 Simplificação da linguagem (cliente ≠ técnico)
+- **Ao criar** (`screens/create_drink_screen.dart`): campo "Foto do drink (opcional)" com **adicionar / trocar / remover** e preview. Picker em `util/image_pick.dart` (`image_picker`), com imagem **redimensionada/comprimida** para caber no armazenamento local.
+- **No hub** (`widgets/drink_thumb.dart`, usado em `drink_card` e nos painéis do `home`): mostra a foto quando existe; **sem foto, cai para a ilustração gerada do copo** (fallback).
+- **No admin** (seção "Gerenciar drinks"): definir/trocar/remover a foto de **qualquer** drink, **inclusive os 8 de fábrica**. Como os presets são `const`, a foto deles é guardada como *override* (`AppSettings.presetImageOverrides`, id → base64) e aplicada na leitura do catálogo.
+- **Persistência**: drinks do owner via `DrinkRepository`; overrides dos presets via `SettingsRepository`. Ambos em `SharedPreferences`.
 
-- **Esconder a string `#SD;...`** das telas de preparo e conclusão → vira "modo debug" dentro do admin.
-- Remover ms/contagens técnicas da visão do cliente; no preparo, **animação amigável de copo enchendo** com frase simpática, no lugar do anel com porcentagem.
-- Tela Pronto mais celebrativa ("Prontinho! Pegue seu copo") e menos relatório.
-- **Admin permanece denso e técnico** — é ferramenta do dono; recebe só o novo tema.
+### 5.4 Arquivos
 
-### 5.5 Decisões pendentes antes de executar
-
-1. Direção visual: **A, B ou C?**
-2. Existe identidade de marca (logo/paleta oficial) ou o app propõe?
-3. Referências de apps cujo visual vocês gostam (acelera acertar de primeira).
-
-### 5.6 Plano de execução (ordem e arquivos)
-
-| # | Etapa | Arquivos |
-|---|---|---|
-| 1 | Novos tokens: paleta, fonte, raios, sombras | `theme/sd_theme.dart` |
-| 2 | Copos novos (gradiente, guarnição, animação) | `widgets/drink_illustration.dart`, `widgets/cup_widget.dart` |
-| 3 | Telas do cliente | `home` → `customize`/`create_drink` → `payment` → `making` → `done`/`error` |
-| 4 | Admin: tema + "modo debug" (string de comando) | `screens/admin_screen.dart` |
-| 5 | Revisão de microcopy (todos os textos) | telas em geral |
-
-Como o tema é centralizado e as telas só consomem tokens, a etapa 1 já transforma a cara do app inteiro; as demais são refinamento.
+| Etapa | Arquivos |
+|---|---|
+| Tokens (paleta, Poppins, cards de vidro, pílulas) | `theme/sd_theme.dart` |
+| Fundo festivo global | `widgets/festive_background.dart`, `app.dart` |
+| Botão pílula | `widgets/neon_button.dart` |
+| Foto: modelo / picker / miniatura | `models/drink_models.dart`, `util/image_pick.dart`, `widgets/drink_thumb.dart` |
+| Foto: persistência / estado | `data/settings_repository.dart`, `services/drink_provider.dart` |
+| Foto: criação / hub / admin | `screens/create_drink_screen.dart`, `widgets/drink_card.dart`, `screens/home_screen.dart`, `screens/admin_screen.dart` |
+| Microcopy + Scaffold transparente | telas do cliente |
 
 ---
 

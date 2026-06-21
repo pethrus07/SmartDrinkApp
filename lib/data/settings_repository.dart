@@ -27,6 +27,11 @@ class AppSettings {
   int drinksServed;
   Map<int, int> mlServedByReservoir;
 
+  /// Imagens definidas para drinks de fábrica (id → base64). Os presets são
+  /// `const` e não podem ser mutados; guardamos a foto à parte e a aplicamos
+  /// na leitura do catálogo.
+  Map<String, String> presetImageOverrides;
+
   AppSettings({
     required this.msPerMl,
     required this.valveOpenMs,
@@ -35,6 +40,7 @@ class AppSettings {
     required this.ingredientNames,
     required this.drinksServed,
     required this.mlServedByReservoir,
+    required this.presetImageOverrides,
   });
 
   factory AppSettings.defaults() => AppSettings(
@@ -47,6 +53,7 @@ class AppSettings {
         mlServedByReservoir: {
           for (int i = 1; i <= numReservoirs; i++) i: 0,
         },
+        presetImageOverrides: {},
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,6 +66,7 @@ class AppSettings {
         'drinksServed': drinksServed,
         'mlServedByReservoir':
             mlServedByReservoir.map((k, v) => MapEntry(k.toString(), v)),
+        'presetImageOverrides': presetImageOverrides,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -81,6 +89,9 @@ class AppSettings {
                     .containsKey('$i'))
                   MapEntry(i, 0),
             ]),
+      presetImageOverrides:
+          (json['presetImageOverrides'] as Map<String, dynamic>? ?? {})
+              .map((k, v) => MapEntry(k, v as String)),
     );
   }
 }

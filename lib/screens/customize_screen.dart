@@ -17,7 +17,7 @@ class CustomizeScreen extends StatelessWidget {
     final isLandscape = screenSize.width > screenSize.height;
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -73,7 +73,7 @@ class _CustomizeHeader extends StatelessWidget {
             colors: [SDColors.purple, SDColors.cyan],
           ).createShader(bounds),
           child: Text(
-            'PERSONALIZAR',
+            'Personalizar',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   letterSpacing: 3,
@@ -90,7 +90,7 @@ class _CustomizeHeader extends StatelessWidget {
             border: Border.all(
               color: provider.totalMl > cupMl
                   ? SDColors.pink
-                  : SDColors.cyan.withOpacity(0.3),
+                  : SDColors.cyan.withValues(alpha: 0.3),
             ),
           ),
           child: Text(
@@ -241,7 +241,7 @@ class _IngredientSlider extends StatelessWidget {
       decoration: BoxDecoration(
         color: SDColors.card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: ingredient.color.withOpacity(0.2)),
+        border: Border.all(color: ingredient.color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -256,7 +256,7 @@ class _IngredientSlider extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: ingredient.color.withOpacity(0.4),
+                      color: ingredient.color.withValues(alpha: 0.4),
                       blurRadius: 8,
                     ),
                   ],
@@ -298,7 +298,7 @@ class _IngredientSlider extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: SDColors.pink.withOpacity(0.1),
+                    color: SDColors.pink.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(Icons.close, color: SDColors.pink, size: 18),
@@ -311,9 +311,9 @@ class _IngredientSlider extends StatelessWidget {
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: ingredient.color,
-              inactiveTrackColor: ingredient.color.withOpacity(0.15),
+              inactiveTrackColor: ingredient.color.withValues(alpha: 0.15),
               thumbColor: ingredient.color,
-              overlayColor: ingredient.color.withOpacity(0.2),
+              overlayColor: ingredient.color.withValues(alpha: 0.2),
               trackHeight: 10,
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14),
             ),
@@ -341,12 +341,12 @@ class _IngredientSlider extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: isActive
-                        ? ingredient.color.withOpacity(0.2)
+                        ? ingredient.color.withValues(alpha: 0.2)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: isActive
-                          ? ingredient.color.withOpacity(0.5)
+                          ? ingredient.color.withValues(alpha: 0.5)
                           : SDColors.border,
                     ),
                   ),
@@ -380,7 +380,7 @@ class _AddIngredientRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: SDColors.card.withOpacity(0.5),
+        color: SDColors.card.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: SDColors.border, style: BorderStyle.solid),
       ),
@@ -388,7 +388,7 @@ class _AddIngredientRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ADICIONAR INGREDIENTE',
+            'Adicionar ingrediente',
             style: TextStyle(
               color: SDColors.textMuted,
               fontSize: 11,
@@ -406,9 +406,9 @@ class _AddIngredientRow extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: ing.color.withOpacity(0.08),
+                    color: ing.color.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: ing.color.withOpacity(0.3)),
+                    border: Border.all(color: ing.color.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -517,7 +517,7 @@ class _CustomizeFooter extends StatelessWidget {
         // Botão fazer
         Expanded(
           child: NeonButton(
-            label: 'FAZER DRINK',
+            label: 'Fazer drink',
             icon: Icons.local_bar,
             color: SDColors.cyan,
             expanded: true,

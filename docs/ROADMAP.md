@@ -19,7 +19,15 @@
 - [x] Estatísticas: drinks servidos + ml por reservatório (persistidas, com zerar)
 - [x] **Tela de pagamento simulada** (Pix com QR ilustrativo / cartão, preço configurável no admin)
 
-## v0.4 — Conectar à máquina real
+## ✅ v0.4 — Redesign vibrante + foto nos drinks (entregue)
+
+- [x] Redesign visual direção **C (vibrante festivo)**: gradiente de fundo, cards de vidro, Poppins, botões pílula, sentence case
+- [x] Linguagem do cliente simplificada (string `#SD;` e ms fora da tela de preparo)
+- [x] **Foto no drink**: upload ao criar, exibida no hub (fallback para a ilustração do copo)
+- [x] Foto editável no admin para **qualquer** drink, inclusive os 8 de fábrica (override persistido)
+- [x] `flutter analyze` limpo + testes de protocolo passando
+
+## v0.5 — Conectar à máquina real
 
 - [ ] Implementar o transporte escolhido (+ reconexão automática)
 - [ ] Tela/banner de "máquina desconectada"

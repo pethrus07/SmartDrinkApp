@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import '../models/drink_models.dart';
 import '../services/drink_provider.dart';
 import '../theme/sd_theme.dart';
-import '../widgets/neon_button.dart';
+import '../util/image_pick.dart';
 import '../widgets/drink_illustration.dart';
+import '../widgets/drink_thumb.dart';
 import 'create_drink_screen.dart';
 
 class AdminScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class AdminScreen extends StatelessWidget {
     final provider = context.watch<DrinkProvider>();
 
     return Scaffold(
-      backgroundColor: SDColors.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -52,9 +53,9 @@ class AdminScreen extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: SDColors.orange.withOpacity(0.1),
+                      color: SDColors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: SDColors.orange.withOpacity(0.3)),
+                      border: Border.all(color: SDColors.orange.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       'OWNER',
@@ -235,8 +236,8 @@ class _ReservoirCard extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: ingredient.color.withOpacity(0.15),
-              border: Border.all(color: ingredient.color.withOpacity(0.4)),
+              color: ingredient.color.withValues(alpha: 0.15),
+              border: Border.all(color: ingredient.color.withValues(alpha: 0.4)),
             ),
             child: Center(
               child: Text(
@@ -293,9 +294,9 @@ class _ReservoirCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _levelColor.withOpacity(0.1),
+              color: _levelColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _levelColor.withOpacity(0.4)),
+              border: Border.all(color: _levelColor.withValues(alpha: 0.4)),
             ),
             child: Text(
               _levelLabel,
@@ -317,24 +318,24 @@ class _ReservoirCard extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: SDColors.cyan
-                    .withOpacity(level >= 2 ? 0.04 : 0.1),
+                    .withValues(alpha: level >= 2 ? 0.04 : 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                     color:
-                        SDColors.cyan.withOpacity(level >= 2 ? 0.15 : 0.4)),
+                        SDColors.cyan.withValues(alpha: level >= 2 ? 0.15 : 0.4)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.opacity,
                       color: SDColors.cyan
-                          .withOpacity(level >= 2 ? 0.4 : 1),
+                          .withValues(alpha: level >= 2 ? 0.4 : 1),
                       size: 14),
                   const SizedBox(width: 4),
                   Text(
                     'REABASTECER',
                     style: TextStyle(
                       color: SDColors.cyan
-                          .withOpacity(level >= 2 ? 0.4 : 1),
+                          .withValues(alpha: level >= 2 ? 0.4 : 1),
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1,
@@ -500,9 +501,9 @@ class _StatBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,7 +613,7 @@ class _SaleSimulationSection extends StatelessWidget {
               ),
               Switch(
                 value: provider.simulateNextFailure,
-                activeColor: SDColors.pink,
+                activeThumbColor: SDColors.pink,
                 onChanged: (_) => provider.toggleSimulateFailure(),
               ),
             ],
@@ -796,7 +797,7 @@ class _CalibrationInfo extends StatelessWidget {
       decoration: BoxDecoration(
         color: SDColors.card,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: SDColors.yellow.withOpacity(0.2)),
+        border: Border.all(color: SDColors.yellow.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -895,9 +896,9 @@ class _ValveTestPanelState extends State<_ValveTestPanel> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: ing.color.withOpacity(0.1),
+                    color: ing.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: ing.color.withOpacity(0.4)),
+                    border: Border.all(color: ing.color.withValues(alpha: 0.4)),
                   ),
                   child: Column(
                     children: [
@@ -912,7 +913,7 @@ class _ValveTestPanelState extends State<_ValveTestPanel> {
                       Text(
                         ing.name,
                         style: TextStyle(
-                          color: ing.color.withOpacity(0.7),
+                          color: ing.color.withValues(alpha: 0.7),
                           fontSize: 10,
                         ),
                       ),
@@ -977,9 +978,9 @@ class _DrinkManagerSection extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: SDColors.purple.withOpacity(0.08),
+              color: SDColors.purple.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: SDColors.purple.withOpacity(0.3)),
+              border: Border.all(color: SDColors.purple.withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1006,62 +1007,88 @@ class _DrinkManagerSection extends StatelessWidget {
           '${presetDrinks.length} drinks padrão + ${provider.userDrinks.length} customizados',
           style: TextStyle(color: SDColors.textMuted, fontSize: 12),
         ),
+        const SizedBox(height: 4),
+        Text(
+          'Toque na foto de qualquer drink para definir, trocar ou remover a imagem.',
+          style: TextStyle(color: SDColors.textMuted, fontSize: 11),
+        ),
 
-        // Lista de drinks customizados
-        if (provider.userDrinks.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          ...provider.userDrinks.map((drink) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                color: SDColors.card,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: SDColors.border),
-              ),
-              child: Row(
-                children: [
-                  DrinkIllustration(portions: drink.portions, size: 40),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          drink.name,
-                          style: TextStyle(
-                            color: SDColors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
+        // Lista de TODOS os drinks (padrão + customizados)
+        const SizedBox(height: 12),
+        ...provider.allDrinks.map((drink) {
+          final isUser = provider.userDrinks.any((d) => d.id == drink.id);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: SDColors.card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: SDColors.border),
+            ),
+            child: Row(
+              children: [
+                // Foto editável (toque) com selo de câmera
+                GestureDetector(
+                  onTap: () => _editImage(context, provider, drink),
+                  child: Stack(
+                    children: [
+                      DrinkThumb(
+                        drink: drink,
+                        size: 44,
+                        radius: 10,
+                        fallback:
+                            DrinkIllustration(portions: drink.portions, size: 40),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: SDColors.purple,
+                            borderRadius: BorderRadius.circular(6),
                           ),
+                          child: const Icon(Icons.photo_camera,
+                              color: Colors.white, size: 11),
                         ),
-                        Text(
-                          '${drink.totalMl}ml · ${drink.description}',
-                          style: TextStyle(
-                            color: SDColors.textMuted,
-                            fontSize: 11,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        drink.name,
+                        style: TextStyle(
+                          color: SDColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        '${drink.totalMl}ml · ${drink.description}',
+                        style: TextStyle(
+                          color: SDColors.textMuted,
+                          fontSize: 11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${(drink.totalTimeMs / 1000).toStringAsFixed(1)}s',
-                    style: TextStyle(
-                      color: SDColors.cyan,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
+                ),
+                // Excluir só vale para os drinks criados pelo owner.
+                if (isUser) ...[
+                  const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => provider.deleteDrink(drink.id),
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: SDColors.pink.withOpacity(0.1),
+                        color: SDColors.pink.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(Icons.delete_outline,
@@ -1069,11 +1096,56 @@ class _DrinkManagerSection extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            );
-          }),
-        ],
+              ],
+            ),
+          );
+        }),
       ],
     );
+  }
+
+  /// Abre o seletor de foto para o [drink]; com imagem já definida, oferece
+  /// também remover. Vale para qualquer drink (inclusive os de fábrica).
+  Future<void> _editImage(
+    BuildContext context,
+    DrinkProvider provider,
+    DrinkPreset drink,
+  ) async {
+    if (drink.hasImage) {
+      final action = await showModalBottomSheet<String>(
+        context: context,
+        backgroundColor: SDColors.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (_) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.image_outlined, color: SDColors.cyan),
+                title: const Text('Trocar foto',
+                    style: TextStyle(color: SDColors.textPrimary)),
+                onTap: () => Navigator.pop(context, 'change'),
+              ),
+              ListTile(
+                leading:
+                    const Icon(Icons.delete_outline, color: SDColors.pink),
+                title: const Text('Remover foto',
+                    style: TextStyle(color: SDColors.textPrimary)),
+                onTap: () => Navigator.pop(context, 'remove'),
+              ),
+            ],
+          ),
+        ),
+      );
+      if (action == 'remove') {
+        await provider.setDrinkImage(drink.id, null);
+        return;
+      }
+      if (action != 'change') return;
+    }
+    final data = await pickDrinkImageBase64();
+    if (data != null) await provider.setDrinkImage(drink.id, data);
   }
 }
