@@ -5,6 +5,8 @@ import '../services/drink_provider.dart';
 import '../theme/sd_theme.dart';
 import 'dart:math' as math;
 
+/// Tela de preparo: anel de progresso, tempo restante e os ingredientes sendo
+/// servidos. Não expõe dados técnicos (frame `#SD;`, ms) — esses ficam no admin.
 class MakingScreen extends StatelessWidget {
   const MakingScreen({super.key});
 

@@ -8,6 +8,10 @@ import '../widgets/drink_illustration.dart';
 import '../widgets/drink_thumb.dart';
 import 'create_drink_screen.dart';
 
+/// Painel do dono (acessado por PIN na vitrine). Concentra a operação da
+/// máquina: gerenciar drinks e suas fotos, níveis/reabastecimento dos
+/// reservatórios, estatísticas, preço e simulação, protocolo, calibragem e
+/// teste de válvulas. É a única área técnica/densa — o resto do app é do cliente.
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
 

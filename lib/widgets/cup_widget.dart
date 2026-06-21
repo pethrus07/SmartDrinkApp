@@ -3,6 +3,9 @@ import 'dart:math' as math;
 import '../models/drink_models.dart';
 import '../theme/sd_theme.dart';
 
+/// Copo ilustrado via [CustomPainter]: desenha as camadas de ingredientes nas
+/// cores reais da receita, com animação opcional de enchimento. Serve de
+/// fallback visual quando o drink não tem foto.
 class CupWidget extends StatefulWidget {
   final List<DrinkPortion> portions;
   final double maxMl;

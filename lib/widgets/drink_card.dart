@@ -4,6 +4,9 @@ import '../theme/sd_theme.dart';
 import 'drink_illustration.dart';
 import 'drink_thumb.dart';
 
+/// Card de um drink na vitrine: miniatura (foto enviada ou copo ilustrado),
+/// nome, descrição, barra de proporção dos ingredientes e volume/tempo. Esmaece
+/// e ganha o selo "EM FALTA" quando algum ingrediente do drink está em falta.
 class DrinkCard extends StatelessWidget {
   final DrinkPreset drink;
   final bool isSelected;

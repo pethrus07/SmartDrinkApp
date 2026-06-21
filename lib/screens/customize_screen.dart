@@ -6,6 +6,9 @@ import '../theme/sd_theme.dart';
 import '../widgets/cup_widget.dart';
 import '../widgets/neon_button.dart';
 
+/// Tela de montar/ajustar o drink: sliders por reservatório com percentuais ao
+/// vivo e trava no volume do copo, adicionar/remover ingredientes e seguir para
+/// o pagamento. Opera sobre as porções em edição do [DrinkProvider].
 class CustomizeScreen extends StatelessWidget {
   const CustomizeScreen({super.key});
 
