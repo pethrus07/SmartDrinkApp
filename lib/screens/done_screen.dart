@@ -4,6 +4,8 @@ import '../services/drink_provider.dart';
 import '../theme/sd_theme.dart';
 import '../widgets/neon_button.dart';
 
+/// Tela de conclusão ("pode pegar seu copo"): celebra o fim do preparo com uma
+/// animação e oferece voltar ao início para um novo pedido.
 class DoneScreen extends StatefulWidget {
   const DoneScreen({super.key});
 

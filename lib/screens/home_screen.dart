@@ -9,6 +9,10 @@ import '../widgets/neon_button.dart';
 import '../widgets/drink_thumb.dart';
 import '../widgets/pin_dialog.dart';
 
+/// Vitrine do kiosk (tela inicial). Mostra a grade de drinks (presets + criados)
+/// e o card "Personalizar"; ao selecionar um drink, um painel lateral exibe a
+/// foto/composição e as ações (Ajustar / Fazer drink). Adapta o layout entre
+/// paisagem (tablet na máquina) e retrato.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

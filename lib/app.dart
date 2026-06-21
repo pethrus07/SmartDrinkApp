@@ -12,6 +12,8 @@ import 'services/drink_provider.dart';
 import 'theme/sd_theme.dart';
 import 'widgets/festive_background.dart';
 
+/// Raiz do app: tema, fundo festivo global ([FestiveBackground]) e o roteador
+/// de telas por estado ([_ScreenRouter]).
 class SmartDrinkApp extends StatelessWidget {
   const SmartDrinkApp({super.key});
 
