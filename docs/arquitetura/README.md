@@ -9,9 +9,19 @@ cada uma numa notação padrão:
 
 ## Smart Drink · app da máquina de drinks
 
-App Flutter em modo kiosk, no tablet da máquina Smart Drink: o cliente escolhe e ajusta o drink, paga (simulado) e a máquina dosa de 6 reservatórios. Hoje roda inteiro com a máquina simulada.
+App Flutter em modo kiosk, no tablet da máquina Smart Drink: o cliente escolhe e ajusta o drink, paga por Pix ou cartão (ainda simulado) e a máquina dosa de 6 reservatórios. Hoje roda inteiro com a máquina simulada.
 
-![Smart Drink · app da máquina de drinks](./smartdrinkapp.svg)
+### Quem usa e para quê (UML)
+
+![Casos de uso · Smart Drink · app da máquina de drinks](./smartdrinkapp-1-casos-de-uso.svg)
+
+### Do toque na tela ao drink pronto (BPMN 2.0)
+
+![Processo · Smart Drink · app da máquina de drinks](./smartdrinkapp-2-processo.svg)
+
+### Arquitetura (C4, containers)
+
+![Arquitetura · Smart Drink · app da máquina de drinks](./smartdrinkapp-3-arquitetura.svg)
 
 Editável: [`smartdrinkapp.excalidraw`](./smartdrinkapp.excalidraw), abre em [excalidraw.com](https://excalidraw.com) ou no VS Code com a extensão Excalidraw.
 
