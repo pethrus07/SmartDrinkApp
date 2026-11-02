@@ -67,7 +67,7 @@ O cliente chega na vitrine, escolhe um drink pronto ou monta o seu, paga (Pix ou
 
 ### 3.6 Painel do dono (Admin)
 
-Protegido por **PIN de 4 dígitos com teclado numérico na tela** (padrão `1234`, persistido). Seções:
+Protegido por **PIN de 4 dígitos com teclado numérico na tela** (padrão de fábrica `1234`, que precisa ser trocado no primeiro acesso; o novo PIN fica persistido). Seções:
 
 | Seção | O que faz |
 |---|---|

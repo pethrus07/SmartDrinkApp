@@ -1,5 +1,9 @@
 # Roadmap
 
+## Agora (01/11/2026)
+
+Projeto **pausado**, esperando o projetista do gabinete e a decisão do canal físico (abaixo). Nada a fazer no app até lá.
+
 ## 🔴 Decisões pendentes (bloqueiam a próxima fase)
 
 1. **Canal físico tablet ↔ placa** — USB serial (OTG), Bluetooth ou WiFi/ESP32?
@@ -13,7 +17,8 @@
 - [x] Bloqueio de drinks com reservatório vazio (selo "EM FALTA" + botões desabilitados)
 - [x] Tela de erro de preparo ("procure o atendente") + gatilho de falha simulada no admin
 - [x] Reabastecimento simulado por reservatório no admin
-- [x] PIN no acesso ao painel admin (padrão 1234, persistido nas configurações)
+- [x] PIN no acesso ao painel admin (padrão de fábrica 1234, persistido nas configurações)
+- [x] PIN de fábrica obrigatoriamente trocado no 1º acesso ao admin (11/2026)
 - [x] Renomear reservatórios pelo admin (persistido)
 - [x] Calibragem ajustável pelo admin (ms/ml e abertura, persistida)
 - [x] Estatísticas: drinks servidos + ml por reservatório (persistidas, com zerar)
@@ -34,7 +39,7 @@
 - [ ] Logs persistentes de comandos enviados (auditoria/suporte)
 - [ ] Calibragem por válvula individual (hoje é global)
 - [ ] Idade/termo de responsabilidade na UI (bebida alcoólica)
-- [ ] PIN configurável pela interface (hoje persiste mas só muda editando o armazenamento)
+- [ ] Trocar o PIN de novo pelo painel admin (hoje só a troca obrigatória do 1º acesso)
 
 ## v1.0 — Escala (frota de máquinas)
 

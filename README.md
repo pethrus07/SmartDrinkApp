@@ -1,68 +1,70 @@
-# Smart Drink 🍹
+[Português](README.pt-BR.md)
 
-App de controle (modo kiosk) da máquina de drinks **Smart Drink** — roda no tablet embutido no gabinete e comanda a eletrônica das válvulas.
+# Smart Drink
+
+Kiosk app for an automated drink machine. It runs on the tablet built into the cabinet: the customer picks or builds a drink, pays, and the app tells the valve board how long to open each of the 6 reservoirs.
+
+## Status
+
+Paused (2026-11). Full demo works with the machine and the payment simulated. Waiting for the cabinet design and the choice of the physical link (USB serial, Bluetooth or Wi-Fi). Not published in any store. Built with a partner company that makes the electronics.
 
 | | |
 |---|---|
-| **Plataforma** | Flutter (Android tablet, landscape, kiosk) |
-| **Estado** | Demo funcional completa — máquina e pagamento simulados |
-| **Hardware** | 6 reservatórios, válvulas com calibragem 30 ms/ml + 100 ms de abertura, copo de 400 ml |
+| Platform | Flutter, Android tablet, landscape, kiosk |
+| Hardware | 6 reservoirs, valves calibrated at 30 ms per ml plus 100 ms opening, 400 ml cup |
 
-## Como rodar
+## Run locally
+
+The `android/` folder is already in the repository; no `flutter create` needed.
 
 ```bash
-flutter create . --platforms=android   # 1ª vez: gera a pasta android/
 flutter pub get
-flutter run                            # roda com a máquina SIMULADA
+flutter run                              # simulated machine (MockTransport)
+flutter run --dart-define=USE_MOCK=false # real machine, once the transport is implemented
 ```
 
-Para rodar contra a máquina real (quando o transporte físico for implementado):
-
-```bash
-flutter run --dart-define=USE_MOCK=false
-```
-
-Testes:
+## Tests
 
 ```bash
 flutter test
 ```
 
-## Arquitetura (resumo)
+19 tests: the `#SD` frame protocol (build and parse), the adjustable calibration, and the admin PIN rules.
+
+## Folders
 
 ```
 lib/
-├── main.dart          # composição de dependências (transporte → serviço → provider)
-├── app.dart           # MaterialApp + roteador de telas por estado
-├── core/              # Dart puro, testável, sem Flutter
-│   ├── machine_config.dart   # calibragem e constantes físicas
-│   └── sd_protocol.dart      # frames #SD;...;/SD (montagem e parse)
-├── hardware/          # canal físico de comunicação
-│   ├── machine_transport.dart    # interface (contrato)
-│   ├── mock_transport.dart       # simulador da máquina (dev/demo)
-│   └── usb_serial_transport.dart # stub do transporte real (pendente)
-├── services/
-│   ├── machine_service.dart  # única classe que fala com o hardware
-│   └── drink_provider.dart   # estado da UI (navegação, drink, progresso)
-├── data/
-│   └── drink_repository.dart # persistência dos drinks do owner
-├── models/            # Ingredient, DrinkPortion, DrinkPreset (+ JSON)
-├── screens/           # home, customize, create, making, done, admin
-├── theme/             # identidade visual neon
-└── widgets/           # componentes reutilizáveis
+  main.dart        dependency wiring (transport → service → provider)
+  app.dart         MaterialApp and screen routing by state
+  core/            pure Dart, no Flutter: calibration, #SD protocol, PIN rules
+  hardware/        transport interface, simulator, real transport stub
+  services/        machine_service (only class that talks to hardware), drink_provider (UI state)
+  data/            local persistence of drinks and settings
+  models/          ingredients, portions, presets
+  screens/         home, customize, payment, making, done, error, admin
+  widgets/, theme/ UI components and visual identity
+test/              unit tests
+docs/              architecture, protocol, full documentation, roadmap, diagrams
 ```
 
-Regra de dependência: **UI → services → hardware/data → core**. Telas nunca montam frames de protocolo nem tocam no transporte; trocar o canal físico (USB/Bluetooth/WiFi) exige implementar uma única classe.
+Dependency rule: UI → services → hardware/data → core. Screens never build protocol frames or touch the transport, so changing the physical link means implementing one class.
 
-Detalhes em [docs/ARQUITETURA.md](docs/ARQUITETURA.md) · Protocolo em [docs/PROTOCOLO.md](docs/PROTOCOLO.md) · Pendências em [docs/ROADMAP.md](docs/ROADMAP.md).
+## Architecture
 
-## Fluxo do usuário
+[docs/ARQUITETURA.md](docs/ARQUITETURA.md), diagrams in [docs/arquitetura/](docs/arquitetura/), full functional description in [docs/DOCUMENTACAO.md](docs/DOCUMENTACAO.md) (Portuguese).
 
-1. **Home** — grade de drinks (presets + criados pelo owner); drinks com ingrediente em falta aparecem com selo "EM FALTA" e não podem ser pedidos
-2. **Customize** — ajuste de porções por reservatório, limitado ao copo de 400 ml; reservatórios vazios não podem ser adicionados
-3. **Pagamento** *(simulado)* — Pix (QR ilustrativo) ou cartão, aprovação automática ou pelo botão de demo
-4. **Making** — comando enviado à máquina, progresso estimado por tempo
-5. **Done** — confirmação e retorno ao início · **Error** — falha no preparo ("procure o atendente")
-6. **Admin** *(PIN padrão: 1234)* — gerenciar drinks, reservatórios (nível, renomear, reabastecer), estatísticas de uso, preço do drink, simulação de falha, calibragem editável e teste de válvulas
+## Decisions and known limits
 
-> Tudo funciona sem hardware: o `MockTransport` simula a máquina (níveis, consumo de estoque, conclusão do preparo) e o pagamento é uma simulação visual do fluxo previsto.
+- The machine ships with admin PIN `1234`. The first time someone opens the admin panel, the app requires a new PIN (4 digits, not `1234`, not all equal). Changing it again later from the panel is still on the roadmap.
+- Payment (Pix and card) is a visual simulation.
+- The firmware does not confirm the end of dispensing, so the app estimates it by time. Open protocol gaps are listed in [docs/PROTOCOLO.md](docs/PROTOCOLO.md).
+- `docs/PROTOCOLO.md` describes the partner's firmware protocol. This repository can only be public with the partner's explicit approval.
+
+## Roadmap
+
+[docs/ROADMAP.md](docs/ROADMAP.md)
+
+## License
+
+All rights reserved.

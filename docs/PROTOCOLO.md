@@ -1,5 +1,7 @@
 # Protocolo de comunicação Smart Drink
 
+> **Confidencialidade:** este é o protocolo do firmware da máquina, que pertence ao parceiro que faz a eletrônica. Ele fica neste repositório porque o app depende dele, mas **o repositório só pode ficar público com o OK explícito do parceiro** (registrado em 01/11/2026). Sem esse OK, o repositório é privado.
+
 Comunicação em texto entre o app (tablet) e a placa da máquina, em frames delimitados por `#SD;` e `/SD`.
 
 Implementação de referência: `lib/core/sd_protocol.dart` (coberta por `test/sd_protocol_test.dart`).
