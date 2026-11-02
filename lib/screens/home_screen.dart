@@ -170,7 +170,18 @@ class _Header extends StatelessWidget {
               context: context,
               builder: (_) => const PinDialog(),
             );
-            if (ok == true) provider.goToAdmin();
+            if (ok != true || !context.mounted) return;
+            if (provider.mustChangeAdminPin) {
+              final novo = await showDialog<String>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => const PinDialog.create(),
+              );
+              if (novo == null) return; // cancelou: continua sem acesso
+              final erro = await provider.setAdminPin(novo);
+              if (erro != null) return;
+            }
+            provider.goToAdmin();
           },
           icon: const Icon(Icons.settings, color: SDColors.textMuted, size: 20),
           tooltip: 'Configurações',

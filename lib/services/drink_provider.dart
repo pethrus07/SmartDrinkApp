@@ -11,6 +11,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../core/admin_pin.dart' as admin_pin;
+
 import '../data/drink_repository.dart';
 import '../data/settings_repository.dart';
 import '../models/drink_models.dart';
@@ -206,6 +208,19 @@ class DrinkProvider extends ChangeNotifier {
   // ─── Configurações (painel admin) ─────────────────────────
 
   String get adminPin => _settings.adminPin;
+
+  /// `true` enquanto o PIN for o de fábrica: o 1º acesso obriga a trocar.
+  bool get mustChangeAdminPin => admin_pin.mustChangeAdminPin(_settings.adminPin);
+
+  /// Grava um PIN novo. Devolve a mensagem de erro, ou `null` se aceitou.
+  Future<String?> setAdminPin(String pin) async {
+    final erro = admin_pin.validateNewAdminPin(pin);
+    if (erro != null) return erro;
+    _settings.adminPin = pin;
+    notifyListeners();
+    await _persistSettings();
+    return null;
+  }
 
   Future<void> setDrinkPriceCents(int cents) async {
     _settings.drinkPriceCents = cents.clamp(0, 1000000);

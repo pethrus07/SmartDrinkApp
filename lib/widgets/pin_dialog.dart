@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/admin_pin.dart';
 import '../services/drink_provider.dart';
 import '../theme/sd_theme.dart';
 
 /// Diálogo de PIN (4 dígitos) protegendo o painel admin.
-/// Retorna `true` via `Navigator.pop` quando o PIN confere.
+///
+/// Modo verificar (padrão): retorna `true` via `Navigator.pop` quando o PIN
+/// confere. Modo criar ([PinDialog.create]): pede um PIN novo duas vezes e
+/// retorna o PIN (String) quando as duas entradas batem e o PIN é válido.
 class PinDialog extends StatefulWidget {
-  const PinDialog({super.key});
+  final bool createMode;
+
+  const PinDialog({super.key}) : createMode = false;
+
+  /// Troca obrigatória do PIN de fábrica no primeiro acesso.
+  const PinDialog.create({super.key}) : createMode = true;
 
   @override
   State<PinDialog> createState() => _PinDialogState();
@@ -16,6 +25,8 @@ class PinDialog extends StatefulWidget {
 class _PinDialogState extends State<PinDialog> {
   String _input = '';
   bool _wrong = false;
+  String _message = 'PIN incorreto';
+  String? _first; // modo criar: 1ª digitação do PIN novo
 
   void _press(String digit) {
     if (_input.length >= 4) return;
@@ -34,7 +45,31 @@ class _PinDialogState extends State<PinDialog> {
     });
   }
 
+  void _fail(String message) {
+    setState(() {
+      _wrong = true;
+      _message = message;
+      _input = '';
+    });
+  }
+
   void _check() {
+    if (widget.createMode) {
+      if (_first == null) {
+        final erro = validateNewAdminPin(_input);
+        if (erro != null) return _fail(erro);
+        setState(() {
+          _first = _input;
+          _input = '';
+        });
+      } else if (_input == _first) {
+        Navigator.of(context).pop(_input);
+      } else {
+        _first = null;
+        _fail('Os PINs não conferem');
+      }
+      return;
+    }
     final pin = context.read<DrinkProvider>().adminPin;
     if (_input == pin) {
       Navigator.of(context).pop(true);
@@ -64,7 +99,9 @@ class _PinDialogState extends State<PinDialog> {
               Icon(Icons.lock_outline, color: SDColors.orange, size: 28),
               const SizedBox(height: 10),
               Text(
-                'ACESSO RESTRITO',
+                !widget.createMode
+                    ? 'ACESSO RESTRITO'
+                    : (_first == null ? 'CRIE UM PIN NOVO' : 'CONFIRME O PIN'),
                 style: TextStyle(
                   color: SDColors.orange,
                   fontSize: 14,
@@ -103,7 +140,7 @@ class _PinDialogState extends State<PinDialog> {
                 height: 18,
                 child: _wrong
                     ? Text(
-                        'PIN incorreto',
+                        _message,
                         style:
                             TextStyle(color: SDColors.pink, fontSize: 12),
                       )

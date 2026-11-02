@@ -8,6 +8,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/admin_pin.dart';
 import '../core/machine_config.dart';
 
 class AppSettings {
@@ -47,7 +48,7 @@ class AppSettings {
         msPerMl: defaultMsPerMl,
         valveOpenMs: defaultValveOpenMs,
         drinkPriceCents: 1500, // R$ 15,00
-        adminPin: '1234',
+        adminPin: defaultAdminPin,
         ingredientNames: {},
         drinksServed: 0,
         mlServedByReservoir: {
