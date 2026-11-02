@@ -67,4 +67,4 @@ Regra de dependência: UI → services → hardware/data → core. As telas nunc
 
 ## Licença
 
-Todos os direitos reservados.
+Todos os direitos reservados. Publicado como portfólio; sem licença de reuso. Veja [LICENSE](LICENSE).

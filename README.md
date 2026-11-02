@@ -67,4 +67,4 @@ Dependency rule: UI → services → hardware/data → core. Screens never build
 
 ## License
 
-All rights reserved.
+All rights reserved. Published as portfolio; not licensed for reuse. See [LICENSE](LICENSE).
